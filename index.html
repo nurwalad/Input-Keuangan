@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Keuangan Pesantren</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .invalid {
+      border-color: #f43f5e !important;
+      background-color: #ffe4e6;
+    }
+  </style>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getDatabase, ref, push, get, child, set } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgRidrFbA7h3Hqp0qcbIap8w_gPCgjDcM",
+      authDomain: "bendahara-f505e.firebaseapp.com",
+      databaseURL: "https://bendahara-f505e-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "bendahara-f505e",
+      storageBucket: "bendahara-f505e.firebasestorage.app",
+      messagingSenderId: "624648718476",
+      appId: "1:624648718476:web:03801f93a45eb2d11493a9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.db = db;
+    window.ref = ref;
+    window.push = push;
+    window.get = get;
+    window.child = child;
+    window.set = set;
+  </script>
+</head>
+
+<body class="bg-gradient-to-br from-emerald-100 via-white to-emerald-50 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-6">
+
+    <h1 class="text-center text-emerald-700 font-semibold mb-4 text-[15px]">
+      BENDAHARA PESANTREN IBNUL JAUZY
+    </h1>
+
+    <div class="flex justify-center gap-4 mb-8">
+      <button id="btnPemasukan" onclick="showForm('pemasukan')"
+        class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold shadow">📥 Pemasukan</button>
+      <button id="btnPengeluaran" onclick="showForm('pengeluaran')"
+        class="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold shadow">📤 Pengeluaran</button>
+    </div>
+
+    <div id="formPemasukan">
+      <div class="grid md:grid-cols-2 gap-4">
+        <input id="noPemasukan" readonly class="border p-3 rounded-xl shadow w-full">
+        <input id="tanggalPemasukan" type="date" class="border p-3 rounded-xl shadow w-full">
+
+        <select id="uraianPemasukan" class="border p-3 rounded-xl shadow md:col-span-2 w-full">
+          <option value="">Pilih Jenis Pemasukan</option>
+          <option>Daftar</option><option>Pangkal</option><option>SPP</option><option>BOS</option>
+          <option>PIP</option><option>Donasi</option><option>Buffer</option><option>Tabungan Santri</option><option>Kantin</option><option>Tabungan Qurban</option>
+        </select>
+
+        <select id="kategoriPemasukan" class="border p-3 rounded-xl shadow md:col-span-2 w-full hidden">
+          <option value="">Pilih Kategori</option>
+          <option value="Wajib">Pemasukan Iuran</option>
+          <option value="Lainnya">Pemasukan Lainnya</option>
+        </select>
+
+        <input id="keteranganLainnya" type="text" placeholder="Keterangan Pemasukan" class="border p-3 rounded-xl shadow md:col-span-2 w-full hidden">
+
+        <select id="namaSantri" class="border p-3 rounded-xl shadow md:col-span-2 w-full hidden">
+          <option value="">Pilih Nama Santri</option>
+          <option>Abdul Halim</option>
+          <option>Abdullah Azzam</option>
+          <option>Ada Satria Mulia</option>
+          <option>Aghistna Kaila Alfaza</option>
+          <option>Agung Kurniawan</option>
+          <option>Ahmad Al-Ghifari</option>
+          <option>Aiza Fadilah Sadiqa</option>
+          <option>Alif Hamzah</option>
+          <option>Anas Adami</option>
+          <option>Aniesah Muthmainnah</option>
+          <option>Aqila Humairah</option>
+          <option>Aqyl Akhdan Hartoto</option>
+          <option>Askar Alsabit Mukti</option>
+          <option>Athaya Uqailah</option>
+          <option>Barock</option>
+          <option>Bunga Lestari Helmi</option>
+          <option>Catur Herlambang</option>
+          <option>Daffa Al Haqqi</option>
+          <option>Danish Filzah Bayanaka</option>
+          <option>Davi Rahadi</option>
+          <option>Dzaki Aditya Daisuke</option>
+          <option>Fadhlan Hadi</option>
+          <option>Fadlan Saputra</option>
+          <option>Faiz Al Faruq Ritonga</option>
+          <option>Farzan Jabbar Argani</option>
+          <option>Firial Aulia Putri Bahri</option>
+          <option>Ghoziya Hafiza</option>
+          <option>Gilang Febriansyah</option>
+          <option>H. Nauli Ara</option>
+          <option>Habib Al Qorni</option>
+          <option>Hafidz Mahfudz Al-Muqorrobin</option>
+          <option>Hafizah Lubna</option>
+          <option>Hafizh Mujahidur Rohman</option>
+          <option>Hanisa</option>
+          <option>Herna Ramadhani</option>
+          <option>Hilyah Qanitah</option>
+          <option>Humaira Balqis</option>
+          <option>Ikhsan Nur Fajar</option>
+          <option>Ilham Dermawan</option>
+          <option>Inayah Husna</option>
+          <option>Irfandy</option>
+          <option>Ja'far Al-Mansyur</option>
+          <option>Jaisur Rahman</option>
+          <option>Jarja Kholid Al-Mutsanna Sihombing</option>
+          <option>Jefri Alpriyansyah Pratama</option>
+          <option>Jerian Naufal Ikhsan Sikumbang</option>
+          <option>Jihan Aqilah</option>
+          <option>Kevin Marshall Stann</option>
+          <option>Khairil Fadil</option>
+          <option>Khairu Azzam Azzaki</option>
+          <option>Khairul Azzam Nugraha</option>
+          <option>Lintang Fajri Rizky Abdillah</option>
+          <option>M Athar Al-Faqih Tanjung</option>
+          <option>M. Fitrah Andika Nst</option>
+          <option>M. Ikhsan Handoko</option>
+          <option>Maher Latif Ismail</option>
+          <option>Mahira Ulya</option>
+          <option>Maulana Khoiri Syahputra</option>
+          <option>Mhd Rayhan Aditya</option>
+          <option>Mhd Zikri Rashdan</option>
+          <option>Mhd. Althaf Awraq Saragih</option>
+          <option>Mhd. Faris Al Faeyza</option>
+          <option>Mhd. Nashiruddin Naufal</option>
+          <option>Mhd. Tegar Syahputra</option>
+          <option>Muhamad Fahri Nurhidayat</option>
+          <option>Muhammad Alvin Malfahim</option>
+          <option>Muhammad Ammar</option>
+          <option>Muhammad Azzam Alhisyam</option>
+          <option>Muhammad Dafi</option>
+          <option>Muhammad Dwisani Alfaris</option>
+          <option>Muhammad Fajar Maulana</option>
+          <option>Muhammad Fakhri Kurniawan</option>
+          <option>Muhammad Farihan Al Khairi</option>
+          <option>Muhammad Irfan Dawami</option>
+          <option>Muhammad Padhil Maulana</option>
+          <option>Muhammad Ulil Albab</option>
+          <option>Muhammad Zaki Firja</option>
+          <option>Muhammad Zidane Gunawan Hrp.</option>
+          <option>Muhammad Zikri Kurniawan</option>
+          <option>Muharram Adrian Jaya</option>
+          <option>Nailah Khairiyah</option>
+          <option>Naya Adelia</option>
+          <option>Nazril Fauza Baihaqi</option>
+          <option>Noufal Ibnu Haidir</option>
+          <option>Nuha Adilah</option>
+          <option>Nurhalifa</option>
+          <option>Nurhidayah</option>
+          <option>Nurmala Dyah Amaly Sasmita</option>
+          <option>Rafi Ilman Ritonga</option>
+          <option>Rafi Raihan Sarmahita Saragih</option>
+          <option>Rahmadan Alva Firansyah</option>
+          <option>Raissa Restu Syasya</option>
+          <option>Revan Atthalariksyah</option>
+          <option>Reyhan Sananta</option>
+          <option>Reza Fah Lepi</option>
+          <option>Riandi Al Predo Sembiring</option>
+          <option>Ridwan Maulana Lubis</option>
+          <option>Ririn Sabrina</option>
+          <option>Rizki Adil</option>
+          <option>Rizki Arrasyid</option>
+          <option>Rumaisoh</option>
+          <option>S. Catrine Gunawan Hrp</option>
+          <option>Saifullah Al Amin</option>
+          <option>Sarah</option>
+          <option>Shafwan Mubarok</option>
+          <option>Sholih Al-Fauzan</option>
+          <option>Suci Gustia Ramadhani</option>
+          <option>Surya Pratama Wijaya</option>
+          <option>Syaddad Shofil Amam</option>
+          <option>Syahira Mubtakira</option>
+          <option>Syamil Ramadhan</option>
+          <option>Syifa Aulia</option>
+          <option>Tengku Fachri Ramadhan</option>
+          <option>Usman Hartaji Hutabarat</option>
+          <option>Wahid Al Fatih Ritonga</option>
+          <option>Yaumil Faiz</option>
+          <option>Yumna Thasa Khalisha</option>
+          <option>Zahrotul Jannah</option>
+        </select>
+
+        <select id="kelasSantri" class="border p-3 rounded-xl shadow md:col-span-2 w-full hidden">
+          <option value="">Pilih Kelas</option>
+          <option>7</option><option>8</option><option>9</option>
+          <option>10</option><option>11</option><option>12</option>
+        </select>
+
+        <select id="bulanSPP" class="border p-3 rounded-xl shadow md:col-span-2 w-full hidden">
+          <option value="">Pilih Bulan SPP</option>
+          <option>Jul 2025</option><option>Aug 2025</option><option>Sep 2025</option>
+          <option>Oct 2025</option><option>Nov 2025</option><option>Dec 2025</option>
+          <option>Jan 2026</option><option>Feb 2026</option><option>Mar 2026</option>
+          <option>Apr 2026</option><option>May 2026</option><option>Jun 2026</option>
+        </select>
+
+        <select id="statusSubsidi" class="border p-3 rounded-xl shadow md:col-span-2 w-full hidden">
+          <option value="">Pilih Status Subsidi</option>
+          <option>Subsidi</option>
+          <option>Non Subsidi</option>
+        </select>
+
+        <input id="jumlahPemasukan" type="text" placeholder="Rp. 0,-" class="border p-3 rounded-xl shadow md:col-span-2 w-full font-semibold"/>
+      </div>
+
+      <button onclick="simpanPemasukan()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
+        💾 Simpan Pemasukan
+      </button>
+
+      <p id="notifPemasukan" class="text-center mt-3 text-green-600 font-semibold hidden">✅ Data Pemasukan Berhasil Disimpan</p>
+    </div>
+
+    <div id="formPengeluaran" class="hidden mt-6">
+      <div class="grid md:grid-cols-2 gap-4">
+        <input id="noPengeluaran" readonly class="border p-3 rounded-xl shadow w-full"/>
+        <input id="tanggalPengeluaran" type="date" class="border p-3 rounded-xl shadow w-full"/>
+
+        <select id="sumberSaldo" class="border p-3 rounded-xl shadow md:col-span-2 w-full">
+          <option value="">Pilih Sumber Dana</option>
+          <option>Daftar</option><option>Pangkal</option><option>SPP</option>
+          <option>BOS</option><option>PIP</option><option>Donasi</option>
+          <option>Buffer</option><option>Tabungan Santri</option><option>Kantin</option><option>Tabungan Qurban</option>
+        </select>
+
+        <input id="uraianPengeluaran" type="text" placeholder="Uraian Pengeluaran" class="border p-3 rounded-xl shadow md:col-span-2 w-full"/>
+
+        <select id="namaSantriKeluar" class="border p-3 rounded-xl shadow md:col-span-2 w-full hidden">
+          <option value="">Pilih Nama Santri</option>
+          <option>Abdul Halim</option>
+          <option>Abdullah Azzam</option>
+          <option>Ada Satria Mulia</option>
+          <option>Aghistna Kaila Alfaza</option>
+          <option>Agung Kurniawan</option>
+          <option>Ahmad Al-Ghifari</option>
+          <option>Aiza Fadilah Sadiqa</option>
+          <option>Alif Hamzah</option>
+          <option>Anas Adami</option>
+          <option>Aniesah Muthmainnah</option>
+          <option>Aqila Humairah</option>
+          <option>Aqyl Akhdan Hartoto</option>
+          <option>Askar Alsabit Mukti</option>
+          <option>Athaya Uqailah</option>
+          <option>Barock</option>
+          <option>Bunga Lestari Helmi</option>
+          <option>Catur Herlambang</option>
+          <option>Daffa Al Haqqi</option>
+          <option>Danish Filzah Bayanaka</option>
+          <option>Davi Rahadi</option>
+          <option>Dzaki Aditya Daisuke</option>
+          <option>Fadhlan Hadi</option>
+          <option>Fadlan Saputra</option>
+          <option>Faiz Al Faruq Ritonga</option>
+          <option>Farzan Jabbar Argani</option>
+          <option>Firial Aulia Putri Bahri</option>
+          <option>Ghoziya Hafiza</option>
+          <option>Gilang Febriansyah</option>
+          <option>H. Nauli Ara</option>
+          <option>Habib Al Qorni</option>
+          <option>Hafidz Mahfudz Al-Muqorrobin</option>
+          <option>Hafizah Lubna</option>
+          <option>Hafizh Mujahidur Rohman</option>
+          <option>Hanisa</option>
+          <option>Herna Ramadhani</option>
+          <option>Hilyah Qanitah</option>
+          <option>Humaira Balqis</option>
+          <option>Ikhsan Nur Fajar</option>
+          <option>Ilham Dermawan</option>
+          <option>Inayah Husna</option>
+          <option>Irfandy</option>
+          <option>Ja'far Al-Mansyur</option>
+          <option>Jaisur Rahman</option>
+          <option>Jarja Kholid Al-Mutsanna Sihombing</option>
+          <option>Jefri Alpriyansyah Pratama</option>
+          <option>Jerian Naufal Ikhsan Sikumbang</option>
+          <option>Jihan Aqilah</option>
+          <option>Kevin Marshall Stann</option>
+          <option>Khairil Fadil</option>
+          <option>Khairu Azzam Azzaki</option>
+          <option>Khairul Azzam Nugraha</option>
+          <option>Lintang Fajri Rizky Abdillah</option>
+          <option>M Athar Al-Faqih Tanjung</option>
+          <option>M. Fitrah Andika Nst</option>
+          <option>M. Ikhsan Handoko</option>
+          <option>Maher Latif Ismail</option>
+          <option>Mahira Ulya</option>
+          <option>Maulana Khoiri Syahputra</option>
+          <option>Mhd Rayhan Aditya</option>
+          <option>Mhd Zikri Rashdan</option>
+          <option>Mhd. Althaf Awraq Saragih</option>
+          <option>Mhd. Faris Al Faeyza</option>
+          <option>Mhd. Nashiruddin Naufal</option>
+          <option>Mhd. Tegar Syahputra</option>
+          <option>Muhamad Fahri Nurhidayat</option>
+          <option>Muhammad Alvin Malfahim</option>
+          <option>Muhammad Ammar</option>
+          <option>Muhammad Azzam Alhisyam</option>
+          <option>Muhammad Dafi</option>
+          <option>Muhammad Dwisani Alfaris</option>
+          <option>Muhammad Fajar Maulana</option>
+          <option>Muhammad Fakhri Kurniawan</option>
+          <option>Muhammad Farihan Al Khairi</option>
+          <option>Muhammad Irfan Dawami</option>
+          <option>Muhammad Padhil Maulana</option>
+          <option>Muhammad Ulil Albab</option>
+          <option>Muhammad Zaki Firja</option>
+          <option>Muhammad Zidane Gunawan Hrp.</option>
+          <option>Muhammad Zikri Kurniawan</option>
+          <option>Muharram Adrian Jaya</option>
+          <option>Nailah Khairiyah</option>
+          <option>Naya Adelia</option>
+          <option>Nazril Fauza Baihaqi</option>
+          <option>Noufal Ibnu Haidir</option>
+          <option>Nuha Adilah</option>
+          <option>Nurhalifa</option>
+          <option>Nurhidayah</option>
+          <option>Nurmala Dyah Amaly Sasmita</option>
+          <option>Rafi Ilman Ritonga</option>
+          <option>Rafi Raihan Sarmahita Saragih</option>
+          <option>Rahmadan Alva Firansyah</option>
+          <option>Raissa Restu Syasya</option>
+          <option>Revan Atthalariksyah</option>
+          <option>Reyhan Sananta</option>
+          <option>Reza Fah Lepi</option>
+          <option>Riandi Al Predo Sembiring</option>
+          <option>Ridwan Maulana Lubis</option>
+          <option>Ririn Sabrina</option>
+          <option>Rizki Adil</option>
+          <option>Rizki Arrasyid</option>
+          <option>Rumaisoh</option>
+          <option>S. Catrine Gunawan Hrp</option>
+          <option>Saifullah Al Amin</option>
+          <option>Sarah</option>
+          <option>Shafwan Mubarok</option>
+          <option>Sholih Al-Fauzan</option>
+          <option>Suci Gustia Ramadhani</option>
+          <option>Surya Pratama Wijaya</option>
+          <option>Syaddad Shofil Amam</option>
+          <option>Syahira Mubtakira</option>
+          <option>Syamil Ramadhan</option>
+          <option>Syifa Aulia</option>
+          <option>Tengku Fachri Ramadhan</option>
+          <option>Usman Hartaji Hutabarat</option>
+          <option>Wahid Al Fatih Ritonga</option>
+          <option>Yaumil Faiz</option>
+          <option>Yumna Thasa Khalisha</option>
+          <option>Zahrotul Jannah</option>
+        </select>
+
+        <input id="jumlahSatuan" type="number" placeholder="Jumlah Satuan" class="border p-3 rounded-xl shadow"/>
+        <select id="kodePengeluaran" class="border p-3 rounded-xl shadow">
+          <option value="">Kode Satuan</option>
+          <option>Pcs</option><option>Tabung</option><option>Isi</option><option>Botol</option>
+          <option>Rim</option><option>Pack</option><option>Bungkus</option><option>Paket</option>
+          <option>Lusin</option><option>Kotak</option><option>Org</option><option>Unit</option>
+          <option>Kodi</option><option>Lembar</option><option>Buah</option><option>Liter</option>
+          <option>Kilo</option><option>Kali</option><option>Karung</option><option>Ikat</option>
+          <option>Pasang</option>
+        </select>
+
+        <input id="hargaPengeluaran" type="text" placeholder="Rp. 0,-" class="border p-3 rounded-xl shadow w-full font-semibold"/>
+        <input id="totalPengeluaran" readonly placeholder="Total Otomatis" class="border p-3 rounded-xl bg-gray-100 font-bold"/>
+      </div>
+
+      <button onclick="simpanPengeluaran()" class="mt-6 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
+        💾 Simpan Pengeluaran
+      </button>
+
+      <p id="notifPengeluaran" class="text-center mt-3 text-red-600 font-semibold hidden">✅ Data Pengeluaran Berhasil Disimpan</p>
+    </div>
+
+  </div>
+
+  <script>
+    function showForm(type) {
+      const fMasuk = document.getElementById('formPemasukan');
+      const fKeluar = document.getElementById('formPengeluaran');
+      const bMasuk = document.getElementById('btnPemasukan');
+      const bKeluar = document.getElementById('btnPengeluaran');
+
+      if (type === 'pemasukan') {
+        fMasuk.classList.remove('hidden');
+        fKeluar.classList.add('hidden');
+        bMasuk.classList.add('bg-emerald-600','text-white');
+        bMasuk.classList.remove('bg-gray-200','text-gray-700');
+        bKeluar.classList.add('bg-gray-200','text-gray-700');
+        bKeluar.classList.remove('bg-red-600','text-white');
+      } else {
+        fMasuk.classList.add('hidden');
+        fKeluar.classList.remove('hidden');
+        bKeluar.classList.add('bg-red-600','text-white');
+        bKeluar.classList.remove('bg-gray-200','text-gray-700');
+        bMasuk.classList.add('bg-gray-200','text-gray-700');
+        bMasuk.classList.remove('bg-emerald-600','text-white');
+      }
+    }
+
+    const uraianPemasukan = document.getElementById("uraianPemasukan");
+    const kategoriPemasukan = document.getElementById("kategoriPemasukan");
+    const keteranganLainnya = document.getElementById("keteranganLainnya");
+    const bulanSPP = document.getElementById("bulanSPP");
+    const namaSantri = document.getElementById("namaSantri");
+    const kelasSantri = document.getElementById("kelasSantri");
+    const statusSubsidi = document.getElementById("statusSubsidi");
+    const namaSantriKeluar = document.getElementById("namaSantriKeluar");
+    const sumberSaldo = document.getElementById("sumberSaldo");
+    const uraianPengeluaran = document.getElementById("uraianPengeluaran");
+
+    uraianPemasukan.addEventListener("change", function () {
+      const jenis = this.value;
+      if (["Daftar","Pangkal","SPP","BOS","PIP"].includes(jenis)) {
+        kategoriPemasukan.classList.remove("hidden");
+      } else {
+        kategoriPemasukan.classList.add("hidden");
+        kategoriPemasukan.value = "";
+        toggleFields("Lainnya");
+      }
+
+      if (!["Daftar","Pangkal","SPP","BOS","PIP"].includes(jenis)) {
+          if (["Tabungan Santri", "PIP"].includes(jenis)) {
+              namaSantri.classList.remove("hidden");
+              kelasSantri.classList.remove("hidden");
+          } else {
+              namaSantri.classList.add("hidden");
+              kelasSantri.classList.add("hidden");
+          }
+      }
+    });
+
+    kategoriPemasukan.addEventListener("change", function() {
+        toggleFields(this.value);
+    });
+
+    function toggleFields(kategori) {
+        const jenis = uraianPemasukan.value;
+        if (kategori === "Wajib") {
+            keteranganLainnya.classList.add("hidden");
+            namaSantri.classList.remove("hidden");
+            kelasSantri.classList.remove("hidden");
+            if (jenis === "SPP") {
+                bulanSPP.classList.remove("hidden");
+                statusSubsidi.classList.remove("hidden");
+            }
+        } else if (kategori === "Lainnya") {
+            keteranganLainnya.classList.remove("hidden");
+            namaSantri.classList.add("hidden");
+            kelasSantri.classList.add("hidden");
+            bulanSPP.classList.add("hidden");
+            statusSubsidi.classList.add("hidden");
+            namaSantri.value = "";
+            kelasSantri.value = "";
+            bulanSPP.value = "";
+            statusSubsidi.value = "";
+        }
+    }
+
+    function formatRupiah(angka) {
+      let numberString = (angka||"").toString().replace(/[^0-9]/g,"");
+      if (!numberString) return "Rp. 0,-";
+      let sisa = numberString.length % 3;
+      let rupiah = numberString.substr(0, sisa);
+      let ribuan = numberString.substr(sisa).match(/\d{3}/g);
+      if (ribuan) {
+        let separator = sisa ? "." : "";
+        rupiah += separator + ribuan.join(".");
+      }
+      return "Rp. " + rupiah + ",-";
+    }
+
+    const inputPemasukan = document.getElementById("jumlahPemasukan");
+    inputPemasukan.addEventListener("input", function () {
+      this.value = formatRupiah(this.value);
+    });
+
+    const inputHarga = document.getElementById("hargaPengeluaran");
+    inputHarga.addEventListener("input", function () {
+      this.value = formatRupiah(this.value);
+      hitungTotal();
+    });
+
+    const jumlahSatuan = document.getElementById("jumlahSatuan");
+    jumlahSatuan.addEventListener("input", hitungTotal);
+
+    function hitungTotal(){
+      const qty = parseFloat((jumlahSatuan.value||"").toString().replace(/[^0-9]/g,"")) || 0;
+      const harga = parseFloat((inputHarga.value||"").toString().replace(/[^0-9]/g,"")) || 0;
+      const total = qty * harga;
+      document.getElementById("totalPengeluaran").value = formatRupiah(total.toString());
+    }
+
+    function cekTabunganSantriKeluar() {
+      const sumber = (sumberSaldo.value||"").toLowerCase();
+      const uraian = (uraianPengeluaran.value||"").toLowerCase();
+      if (sumber.includes("tabungan") || uraian.includes("tabungan")) {
+        namaSantriKeluar.classList.remove("hidden");
+      } else {
+        namaSantriKeluar.classList.add("hidden");
+        namaSantriKeluar.value = "";
+      }
+    }
+    sumberSaldo.addEventListener("change", cekTabunganSantriKeluar);
+    uraianPengeluaran.addEventListener("input", cekTabunganSantriKeluar);
+
+    async function ambilSaldo() {
+      try {
+        const snap = await window.get(window.ref(window.db, "saldoGlobal/total"));
+        if (snap.exists && snap.exists()) {
+          window.saldoSaatIni = parseInt(snap.val()) || 0;
+        } else {
+          window.saldoSaatIni = 0;
+          await window.set(window.ref(window.db, "saldoGlobal/total"), 0);
+        }
+      } catch (e) { window.saldoSaatIni = 0; }
+    }
+
+    async function generateNomorTransaksi() {
+      const dbRef = window.ref(window.db);
+      const offsetPemasukan = 181; 
+      const offsetPengeluaran = 158;
+
+      let maxMasuk = offsetPemasukan;
+      try {
+        const pemasukanSnap = await window.get(window.child(dbRef, "pemasukan"));
+        if (pemasukanSnap.exists()) {
+          Object.values(pemasukanSnap.val()).forEach(item => {
+            if (item.noTransaksi && item.noTransaksi.startsWith("M")) {
+              const n = parseInt(item.noTransaksi.replace("M","")) || 0;
+              if (n > maxMasuk) maxMasuk = n;
+            }
+          });
+        }
+      } catch (e) { console.error(e); }
+      document.getElementById("noPemasukan").value = "M" + String(maxMasuk + 1).padStart(10,"0");
+
+      let maxKeluar = offsetPengeluaran;
+      try {
+        const pengeluaranSnap = await window.get(window.child(dbRef, "pengeluaran"));
+        if (pengeluaranSnap.exists()) {
+          Object.values(pengeluaranSnap.val()).forEach(item => {
+            if (item.noTransaksi && item.noTransaksi.startsWith("K")) {
+              const n = parseInt(item.noTransaksi.replace("K","")) || 0;
+              if (n > maxKeluar) maxKeluar = n;
+            }
+          });
+        }
+      } catch (e) { console.error(e); }
+      document.getElementById("noPengeluaran").value = "K" + String(maxKeluar + 1).padStart(10,"0");
+    }
+
+    async function simpanPemasukan() {
+      let valid = true;
+      const tanggal = document.getElementById("tanggalPemasukan");
+      const uraian = document.getElementById("uraianPemasukan");
+      const kategori = document.getElementById("kategoriPemasukan");
+      const ketLain = document.getElementById("keteranganLainnya");
+      const jumlah = document.getElementById("jumlahPemasukan");
+      const nama = document.getElementById("namaSantri");
+      const kelas = document.getElementById("kelasSantri");
+      const bulan = document.getElementById("bulanSPP");
+      const subsidi = document.getElementById("statusSubsidi");
+
+      [tanggal, uraian, kategori, ketLain, jumlah, nama, kelas, bulan, subsidi].forEach(el => { if (el) el.classList.remove("invalid"); });
+
+      function cek(el) {
+        if (!el.classList.contains("hidden") && !el.value) {
+          el.classList.add("invalid");
+          valid = false;
+        }
+      }
+
+      cek(tanggal); cek(uraian); cek(kategori); cek(ketLain); cek(jumlah); cek(nama); cek(kelas); cek(bulan); cek(subsidi);
+      if (!valid) {
+        alert("❌ Lengkapi semua data yang wajib diisi!");
+        return;
+      }
+
+      const angka = jumlah.value.replace(/[^0-9]/g,"");
+
+      await window.push(window.ref(window.db, "pemasukan"), {
+        noTransaksi: document.getElementById("noPemasukan").value,
+        tanggal: tanggal.value,
+        uraian: uraian.value,
+        kategori: kategori.value || "Umum",
+        keteranganTambahan: ketLain.value || "",
+        namaSantri: nama.value || "",
+        kelasSantri: kelas.value || "",
+        bulanSPP: bulan.value || "",
+        statusSubsidi: subsidi.value || "",
+        jumlah: angka,
+        waktu: new Date().toISOString()
+      });
+
+      await generateNomorTransaksi();
+      document.getElementById("notifPemasukan").classList.remove("hidden");
+      setTimeout(()=>document.getElementById("notifPemasukan").classList.add("hidden"), 2500);
+      
+      jumlah.value = "";
+      ketLain.value = "";
+      kategori.value = "";
+      kategori.classList.add("hidden");
+      nama.classList.add("hidden");
+      kelas.classList.add("hidden");
+      bulanSPP.classList.add("hidden");
+      statusSubsidi.classList.add("hidden");
+    }
+
+    async function simpanPengeluaran() {
+      let valid = true;
+      const tgl = document.getElementById("tanggalPengeluaran");
+      const sumber = document.getElementById("sumberSaldo");
+      const uraian = document.getElementById("uraianPengeluaran");
+      const qty = document.getElementById("jumlahSatuan");
+      const kode = document.getElementById("kodePengeluaran");
+      const harga = document.getElementById("hargaPengeluaran");
+
+      [tgl, sumber, uraian, qty, kode, harga].forEach(el => { if (el) el.classList.remove("invalid"); });
+
+      function cek(el) {
+        if (!el.value) {
+          el.classList.add("invalid");
+          valid = false;
+        }
+      }
+
+      cek(tgl); cek(sumber); cek(uraian); cek(qty); cek(kode); cek(harga);
+      if (!valid) {
+        alert("❌ Lengkapi semua data pengeluaran!");
+        return;
+      }
+
+      const hargaBersih = harga.value.replace(/[^0-9]/g,"");
+      const totalBersih = document.getElementById("totalPengeluaran").value.replace(/[^0-9]/g,"");
+
+      await window.push(window.ref(window.db, "pengeluaran"), {
+        noTransaksi: document.getElementById("noPengeluaran").value,
+        tanggal: tgl.value,
+        sumber: sumber.value,
+        uraian: uraian.value,
+        namaSantri: namaSantriKeluar.value || "",
+        jumlahSatuan: qty.value,
+        kode: kode.value,
+        harga: hargaBersih,
+        total: totalBersih,
+        waktu: new Date().toISOString()
+      });
+
+      await generateNomorTransaksi();
+      document.getElementById("notifPengeluaran").classList.remove("hidden");
+      setTimeout(()=>document.getElementById("notifPengeluaran").classList.add("hidden"), 2500);
+      qty.value = ""; harga.value = ""; document.getElementById("totalPengeluaran").value = "";
+    }
+
+    window.addEventListener("load", async () => {
+      try { await ambilSaldo(); } catch(e) {}
+      await generateNomorTransaksi();
+    });
+  </script>
+</body>
+</html>
